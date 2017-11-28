@@ -2,6 +2,8 @@ package com.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -31,6 +33,17 @@ public class BasicApplication {
 				if (e.getRequestUrl().equals(HELLO_URL))
 					counterService.increment("heheda");
 			}
+		};
+	}
+
+	@Bean
+	public HealthIndicator myHealth() {
+		return () -> {
+			int errorCode = 400;
+			if (errorCode != 0) {
+				return Health.down().withDetail("Error Code", errorCode).build();
+			}
+			return Health.up().build();
 		};
 	}
 }
